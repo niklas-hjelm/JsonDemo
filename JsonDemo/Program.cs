@@ -6,7 +6,29 @@ var animals = new List<Animal>();
 animals.Add(new Dog(){Name = "Zoe"});
 animals.Add(new Cat(){Name = "Tussan"});
 
-var json = JsonSerializer.Serialize((object)animals, new JsonSerializerOptions() { WriteIndented = true });
+var json = "[";
+
+foreach (var animal in animals)
+{
+    if (animal is Dog dog)
+    {
+        Console.WriteLine(dog.Name);
+        json += JsonSerializer.Serialize(dog);
+    }
+    else if (animal is Cat cat)
+    {
+        Console.WriteLine(cat.Name);
+        json += JsonSerializer.Serialize(cat);
+    }
+
+    if (animals[^1] != animal)
+    {
+        json += ",";
+    }
+}
+
+json += "]";
+
 Console.WriteLine(json);
 
 var deserialisedAnimal = new List<Animal>();
@@ -30,10 +52,17 @@ using (var jsonDoc = JsonDocument.Parse(json))
             }
         }
     }
-    
+
 }
 
 foreach (var animal in deserialisedAnimal)
 {
-    Console.WriteLine(animal.GetType());
+    if (animal is Dog dog)
+    {
+        Console.WriteLine(dog.Name);
+    }
+    else if (animal is Cat cat)
+    {
+        Console.WriteLine(cat.Name);
+    }
 }
